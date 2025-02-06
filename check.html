@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Passe de Elite</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+            color: #333;
+            text-align: center;
+        }
+
+        /* Cabeçalho transparente */
+        .header {
+            width: 90%;
+            background-color: transparent; /* Fundo transparente */
+            padding: 10px 15px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            border-bottom: 2px solid #ccc;
+        }
+
+        .header img {
+            width: 120px; /* Logo maior */
+            height: auto;
+        }
+
+        /* Estilo do conteúdo do checkout */
+        .checkout-container {
+            max-width: 600px;
+            margin: 30px auto;
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        .finalizar-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #000;
+            color: white;
+            text-align: center;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .finalizar-btn:hover {
+            background-color: #333;
+        }
+
+        .info-text {
+            font-size: 14px;
+            color: #666;
+            margin-top: 15px;
+        }
+
+        /* Mensagem de erro */
+        .error-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: red;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 16px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Cabeçalho com logo -->
+<div class="header">
+    <img src="louco1.png" alt="Logo">
+</div>
+
+<!-- Container do checkout -->
+<div class="checkout-container">
+    <h2>Etapas para efetuar a compra do seu passe Booyah Free Fire</h2>
+    <p>Preencha todas as informações abaixo. Não pedimos nenhum login, apenas seu ID.</p>
+
+    <label>Nome de usuário do jogo (Opcional)</label>
+    <input type="text" id="username">
+
+    <label>ID do Free Fire (Obrigatório)</label>
+    <input type="text" id="gameId" required>
+
+    <label>Código de Indicação (Opcional)</label>
+    <input type="text" id="codigoIndicacao" oninput="verificarRevendedor()">
+    <p id="nomeRevendedor" style="color: green; font-weight: bold;"></p>
+
+    <label>Para quem é o passe? (Obrigatório)</label>
+    <select id="paraQuem">
+        <option value="Para mim">Para mim</option>
+        <option value="Para outra pessoa">Para outra pessoa</option>
+    </select>
+
+    <label>Forma de Pagamento (Obrigatório)</label>
+    <select id="formaPagamento">
+        <option value="Pix">Pix</option>
+        <option value="Cartão de Crédito">Cartão de Crédito</option>
+    </select>
+
+    <label>Número do WhatsApp (Opcional)</label>
+    <input type="text" id="whatsapp">
+
+    <button class="finalizar-btn" onclick="finalizarPedido()">Finalizar Pedido</button>
+
+    <p class="info-text">Após finalizar, você será redirecionado para o WhatsApp para efetuar o pagamento e receber seu passe de elite Booyah.</p>
+</div>
+
+<!-- Mensagem de erro (ID obrigatório) -->
+<div class="error-message" id="errorMessage">O ID do Free Fire é obrigatório!</div>
+
+<script>
+    const revendedores = {
+        "ABC123": "João Silva",
+        "DEF456": "Maria Santos",
+        "GHI789": "Pedro Oliveira",
+        "JKL012": "Ana Souza",
+        "MNO345": "Carlos Lima",
+        "PQR678": "Fernanda Alves",
+        "STU901": "Ricardo Mendes",
+        "VWX234": "Juliana Costa",
+        "YZA567": "Lucas Martins",
+        "BCD890": "Mariana Rocha"
+    };
+
+    function verificarRevendedor() {
+        const codigo = document.getElementById("codigoIndicacao").value.toUpperCase();
+        const nomeRevendedor = revendedores[codigo] || "";
+        document.getElementById("nomeRevendedor").textContent = nomeRevendedor ? `Revendedor: ${nomeRevendedor}` : "";
+    }
+
+    function finalizarPedido() {
+        const gameId = document.getElementById("gameId").value.trim();
+
+        if (!gameId) {
+            mostrarErro("O ID do Free Fire é obrigatório!");
+            return;
+        }
+
+        const username = document.getElementById("username").value || "Não informado";
+        const codigoIndicacao = document.getElementById("codigoIndicacao").value || "Não informado";
+        const nomeRevendedor = revendedores[codigoIndicacao.toUpperCase()] || "Não informado";
+        const paraQuem = document.getElementById("paraQuem").value;
+        const formaPagamento = document.getElementById("formaPagamento").value;
+        const whatsapp = document.getElementById("whatsapp").value || "Não informado";
+
+        const mensagem = `🔥 *Pedido de Passe de Elite - Free Fire* 🔥\n\n`
+            + `🎮 *Nome do Usuário:* ${username}\n`
+            + `🆔 *ID do Free Fire:* ${gameId}\n`
+            + `🔗 *Código de Indicação:* ${codigoIndicacao}\n`
+            + `👤 *Revendedor:* ${nomeRevendedor}\n`
+            + `🎯 *Passe para:* ${paraQuem}\n`
+            + `💰 *Forma de Pagamento:* ${formaPagamento}\n`
+            + `📱 *WhatsApp:* ${whatsapp}\n\n`
+            + `✅ Após o pagamento, seu passe será liberado!`;
+
+        const mensagemCodificada = encodeURIComponent(mensagem);
+        const numeroWhatsApp = "5585997243058";
+
+        const linkWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${mensagemCodificada}`;
+        window.location.href = linkWhatsApp;
+    }
+
+    function mostrarErro(mensagem) {
+        const erro = document.getElementById("errorMessage");
+        erro.textContent = mensagem;
+        erro.style.display = "block";
+        setTimeout(() => {
+            erro.style.display = "none";
+        }, 3000);
+    }
+</script>
+
+
+
+
+<footer>
+    <div class="footer-container">
+        <p>&copy; <span id="year"></span> Passes Booyah Free Fire - Todos os direitos reservados.</p>
+        <p><strong>Métodos de Pagamento:</strong> Pix e Cartão</p>
+        <p><strong>E-mail:</strong> <a href="mailto:passesGarena@gate.com.br">passesGarena@gate.com.br</a></p>
+        <p><strong>Pedido com segurança</strong></p>
+        <p><strong>Endereço:</strong> Av. Paulista, 1578 - Bela Vista, São Paulo, SP</p>
+    </div>
+
+    <style>
+        footer {
+            background-color: #222;
+            color: #fff;
+            padding: 15px;
+            font-size: 14px;
+        }
+
+        .footer-container {
+            max-width: 600px;
+            margin: auto;
+            text-align: left;
+        }
+
+        a {
+            color: #4cb4fb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+    <script>
+        document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+</footer>
+
+
+
+
+
+
+
+
+<!-- Ícone Flutuante do WhatsApp -->
+<div class="whatsapp-button">
+    <a href="ajuda.html" target="_blank">
+        <img src="zap.webp" alt="WhatsApp" class="whatsapp-icon">
+    </a>
+</div>
+
+<style>
+    .whatsapp-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+    .whatsapp-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+</style>
+
+</body>
+</html>
